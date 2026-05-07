@@ -1,0 +1,116 @@
+---
+title: Request Inspection
+description: "Inspect recent requests, filter errors, and look up individual request IDs for a Wafer dedicated endpoint."
+---
+
+Use request inspection to debug failed or slow requests.
+
+## Save the Request ID
+
+Inference responses include an `x-request-id` header.
+
+```text
+x-request-id: <REQUEST_ID>
+```
+
+## List Requests
+
+```bash
+curl -s "https://api.wafer.ai/v1/endpoints/requests?endpoint=<ENDPOINT_HOST>&limit=20&errors_only=true" \
+  -H "Authorization: Bearer <API_KEY>"
+```
+
+```json
+{
+  "requests": [
+    {
+      "request_id": "<REQUEST_ID>",
+      "status_code": 400,
+      "model_requested": "<MODEL_ID>",
+      "model_resolved": "<MODEL_ID>",
+      "is_streaming": true,
+      "ttft_ms": null,
+      "total_latency_ms": 31,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
+      "error_code": "invalid_json_request",
+      "error_message": "Could not parse JSON body",
+      "created_at": "<TIMESTAMP>"
+    }
+  ],
+  "has_more": false,
+  "cursor": null
+}
+```
+
+## Get One Request
+
+```bash
+curl -s "https://api.wafer.ai/v1/endpoints/requests/<REQUEST_ID>?endpoint=<ENDPOINT_HOST>" \
+  -H "Authorization: Bearer <API_KEY>"
+```
+
+Example response:
+
+```json
+{
+  "request_id": "<REQUEST_ID>",
+  "status_code": 200,
+  "model_requested": "<MODEL_ID>",
+  "model_resolved": "<MODEL_ID>",
+  "is_streaming": true,
+  "ttft_ms": 428,
+  "total_latency_ms": 2413,
+  "input_tokens": 1180,
+  "output_tokens": 241,
+  "cache_read_tokens": 960,
+  "error_code": null,
+  "error_message": null,
+  "created_at": "<TIMESTAMP>"
+}
+```
+
+## Parameters
+
+- `endpoint` (required): `<ENDPOINT_HOST>`
+- `limit` (optional, default `50`): `1-200`
+- `cursor` (optional): `<CURSOR>`
+- `errors_only` (optional): `true` or `false`
+
+## Key Fields
+
+- `request_id`: stable request ID
+- `status_code`: final HTTP status code
+- `model_requested`, `model_resolved`: requested and resolved model IDs
+- `ttft_ms`: time to first token
+- `total_latency_ms`: end-to-end latency
+- `input_tokens`, `output_tokens`, `cache_read_tokens`: token counts
+- `error_code`: Wafer error code when available
+- `error_message`: human-readable error description when available
+- `created_at`: UTC timestamp
+
+## Pagination
+
+If `has_more` is `true`, pass the returned `cursor` value into the next request:
+
+```bash
+curl -s "https://api.wafer.ai/v1/endpoints/requests?endpoint=<ENDPOINT_HOST>&limit=50&cursor=<CURSOR>" \
+  -H "Authorization: Bearer <API_KEY>"
+```
+
+## Error-Only Mode
+
+Use `errors_only=true` to list only `4xx` and `5xx` requests.
+
+## Errors
+
+- `401`: missing or invalid API key
+- `403`: API key does not have access to the requested endpoint
+- `404`: request ID was not found for that endpoint
+- `422`: invalid cursor format or invalid `request_id` format (must be a UUID or 12-char hex `x-request-id`)
+
+## Notes
+
+- Request lookup is endpoint-scoped. A valid request ID for another endpoint returns `404`.
+- Use `x-request-id` for exact correlation.

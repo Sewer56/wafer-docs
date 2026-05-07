@@ -1,0 +1,57 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Wafer",
+  "logo": {
+    "dark": "/images/logo-white.svg",
+    "light": "/images/logo-dark.svg"
+  },
+  "favicon": "/images/favicon.svg",
+  "colors": {
+    "primary": "#4F46E5",
+    "light": "#818CF8",
+    "dark": "#4F46E5"
+  },
+  "theme": "maple",
+  "navbar": {
+    "links": [
+      {
+        "type": "github",
+        "href": "https://github.com/wafer-ai/wafer-docs"
+      }
+    ]
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Wafer Pass",
+        "pages": [
+          "wafer-pass"
+        ]
+      },
+      {
+        "group": "Dedicated Endpoints",
+        "pages": [
+          "dedicated-endpoints/overview",
+          "dedicated-endpoints/metrics-api",
+          "dedicated-endpoints/request-inspection"
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/wafer-ai/wafer-docs",
+      "x": "https://x.com/wafer_ai"
+    }
+  },
+  "feedback": {
+    "thumbsRating": true
+  },
+  "anchors": [
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/wafer-ai/wafer-docs"
+    }
+  ]
+}

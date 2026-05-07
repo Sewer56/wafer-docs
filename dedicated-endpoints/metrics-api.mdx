@@ -1,0 +1,108 @@
+---
+title: Metrics API
+description: "Query endpoint-level performance metrics for a Wafer dedicated deployment."
+---
+
+Get endpoint-level summary metrics plus a time series over a lookback window.
+
+## Run
+
+```bash
+curl -s "https://api.wafer.ai/v1/endpoints/metrics?endpoint=<ENDPOINT_HOST>&range_minutes=<RANGE_MINUTES>" \
+  -H "Authorization: Bearer <API_KEY>"
+```
+
+## Parameters
+
+- `endpoint` (required): `<ENDPOINT_HOST>`
+- `range_minutes` (optional): `5`, `15`, `30`, `60`, `360`, `1440`
+- default `range_minutes`: `60`
+
+## Response Shape
+
+```json
+{
+  "endpoint": "example-endpoint.wafer.ai",
+  "range_minutes": 60,
+  "queried_at": "2026-05-01T15:55:19+00:00",
+  "summary": {
+    "total_requests": 1200,
+    "rps": 0.33,
+    "ttft_p50_ms": 410.0,
+    "ttft_p90_ms": 1250.0,
+    "ttft_p99_ms": 3200.0,
+    "tps_p50": 92.0,
+    "tps_p90": 155.0,
+    "latency_p50_ms": 2100.0,
+    "latency_p90_ms": 6400.0,
+    "latency_p99_ms": 12000.0,
+    "cache_hit_pct": 72.5,
+    "total_input_tokens": 4800000,
+    "total_output_tokens": 420000,
+    "total_cache_read_tokens": 3480000,
+    "count_2xx": 1184,
+    "count_4xx": 16,
+    "count_5xx": 0,
+    "error_rate_pct": 1.3,
+    "concurrent_requests": 12,
+    "active_accounts": 1,
+    "engine_running_requests": 2.0,
+    "engine_queue_depth": 0.0,
+    "engine_kv_cache_hit_rate_pct": 68.0,
+    "engine_kv_cache_usage_pct": 42.0,
+    "engine_preemptions_in_range": 0.0
+  },
+  "backends": [
+    {
+      "backend_id": "backend-a",
+      "active_requests": null,
+      "engine_running_requests": 2.0,
+      "engine_queue_depth": 1.0,
+      "is_healthy": true
+    }
+  ],
+  "timeseries": [
+    {
+      "time": "2026-05-01T14:55:00Z",
+      "requests": 120,
+      "tps_p50": 92.0,
+      "ttft_p50_ms": 410.0,
+      "latency_p50_ms": 2100.0,
+      "error_count": 1
+    }
+  ]
+}
+```
+
+## Key Fields
+
+- `rps`: average requests per second across the full window
+- `ttft_p50_ms`, `ttft_p90_ms`, `ttft_p99_ms`: streaming TTFT percentiles
+- `tps_p50`, `tps_p90`: output tokens-per-second percentiles
+- `latency_p50_ms`, `latency_p90_ms`, `latency_p99_ms`: end-to-end latency percentiles
+- `cache_hit_pct`: cache-read prompt tokens divided by total input tokens
+- `count_2xx`, `count_4xx`, `count_5xx`: request count by status class
+- `error_rate_pct`: `4xx + 5xx` divided by total requests
+- `concurrent_requests`: recent activity count, not an exact inflight gauge
+- `active_accounts`: distinct API keys active in the last 2 minutes
+- `engine_running_requests`: sum of in-flight requests across all backend engines
+- `engine_queue_depth`: sum of queued requests across all backend engines
+- `engine_kv_cache_hit_rate_pct`: average KV cache hit rate across backends (percentage)
+- `engine_kv_cache_usage_pct`: average KV cache utilization across backends (percentage)
+- `engine_preemptions_in_range`: total engine preemptions during the lookback window
+- `backends[*].active_requests`: live wafer-edge backend inflight gauge when emitted by the endpoint
+- `backends[*].engine_running_requests`: live engine running request gauge for that backend/node
+- `backends[*].engine_queue_depth`: live engine queue depth gauge for that backend/node
+- `timeseries[*]`: per-bucket `requests`, `tps_p50`, `ttft_p50_ms`, `latency_p50_ms`, `error_count`
+
+## Errors
+
+- `401`: missing or invalid API key
+- `403`: API key does not have access to the requested endpoint
+- `422`: invalid `range_minutes` or invalid query shape
+- `502`: upstream metrics query failed
+
+## Notes
+
+- Metrics are endpoint-scoped. You must pass an `endpoint` your key can access.
+- For per-request debugging, use [Request Inspection](/dedicated-endpoints/request-inspection).

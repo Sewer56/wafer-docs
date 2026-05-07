@@ -1,0 +1,74 @@
+---
+title: Dedicated Endpoints
+description: "Overview of endpoint-scoped auth, metrics, and request debugging for Wafer dedicated deployments."
+---
+
+Use these endpoint-scoped APIs to:
+
+- list accessible endpoints
+- read JSON metrics
+- inspect recent requests
+- look up a request by `x-request-id`
+
+## What You Need
+
+- `<API_KEY>`
+- `<ENDPOINT_HOST>`
+
+## Base URLs
+
+| Surface | Base URL |
+| ------- | -------- |
+| Inference | `https://<ENDPOINT_HOST>/v1` |
+| Metrics and request inspection | `https://api.wafer.ai/v1/endpoints` |
+
+<Note>
+  The current customer observability surface is JSON. A Prometheus export surface is not documented yet.
+</Note>
+
+<div style={{ display: "flex", gap: "12px", flexWrap: "wrap", margin: "16px 0 24px" }}>
+  <a href="/dedicated-endpoints/metrics-api" style={{ display: "inline-block", padding: "10px 16px", borderRadius: "8px", backgroundColor: "#4F46E5", color: "#FFFFFF", textDecoration: "none", borderBottom: "none", fontWeight: 600 }}>
+    Metrics API
+  </a>
+  <a href="https://www.wafer.ai/api-key" style={{ display: "inline-block", padding: "10px 16px", borderRadius: "8px", backgroundColor: "#E5E7EB", color: "#111827", textDecoration: "none", borderBottom: "none", fontWeight: 600 }}>
+    Request Dedicated Endpoint
+  </a>
+</div>
+
+## List Endpoints
+
+```bash
+curl -s "https://api.wafer.ai/v1/endpoints" \
+  -H "Authorization: Bearer <API_KEY>"
+```
+
+```json
+{
+  "endpoints": [
+    {
+      "endpoint": "<ENDPOINT_HOST>",
+      "inference_engine": "<INFERENCE_ENGINE>"
+    }
+  ]
+}
+```
+
+## Routes
+
+- `GET /v1/endpoints`
+- `GET /v1/endpoints/metrics?endpoint=<ENDPOINT_HOST>&range_minutes=<RANGE_MINUTES>`
+- `GET /v1/endpoints/requests?endpoint=<ENDPOINT_HOST>&limit=<LIMIT>&errors_only=<true|false>`
+- `GET /v1/endpoints/requests/<REQUEST_ID>?endpoint=<ENDPOINT_HOST>`
+
+## Current Limits
+
+- `GET /v1/endpoints`: `20/minute`
+- `GET /v1/endpoints/metrics`: `20/minute`
+- `GET /v1/endpoints/requests`: `30/minute`
+- `GET /v1/endpoints/requests/{request_id}`: `30/minute`
+
+## Notes
+
+- The `endpoint` query parameter is required on endpoint-scoped routes.
+- A single API key may be authorized for more than one dedicated endpoint.
+- Use `x-request-id` to look up a single request.
