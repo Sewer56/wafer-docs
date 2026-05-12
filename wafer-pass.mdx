@@ -9,7 +9,7 @@ description: "Fast open-source LLMs for Claude Code, Codex, Conductor, OpenClaw,
 
 **Set up with:** [Claude Code](#set-up-claude-code) · [Codex](#set-up-codex) · [OpenClaw](#set-up-openclaw) · [Hermes Agent](#set-up-hermes-agent) · [Cline](#set-up-cline) · [Roo Code](#set-up-roo-code) · [Kilo Code](#set-up-kilo-code) · [OpenHands](#set-up-openhands)
 
-Wafer builds AI that optimizes AI. We take open models and make them dramatically faster. Wafer Pass currently gives you access to **`DeepSeek-V4-Pro`**, **`Qwen3.5-397B-A17B`**, **`GLM-5.1`**, and **`MiniMax-M2.7`**, all served at multiples of the speed of generic inference providers. More fast open models land on the same subscription — no price increase.
+Wafer builds AI that optimizes AI. We take open models and make them dramatically faster. Wafer Pass currently gives you access to **`Qwen3.5-397B-A17B`** and **`GLM-5.1`**, all served at multiples of the speed of generic inference providers. More fast open models land on the same subscription — no price increase.
 
 Wafer Pass is built for [Claude Code](https://code.claude.com), [Codex](https://github.com/openai/codex), [Conductor](https://www.conductor.build/), [OpenClaw](https://openclaw.ai), [Hermes Agent](https://hermes-agent.nousresearch.com/), [Cline](https://cline.bot), [Roo Code](https://roocode.com), [Kilo Code](https://kilocode.ai), [OpenHands](https://docs.all-hands.dev/), and other agent harnesses. Wafer exposes both an OpenAI-compatible endpoint and an Anthropic-compatible Messages endpoint, so tools like Claude Code work out of the box.
 
@@ -30,14 +30,14 @@ Use your Wafer Pass API key with these values:
 See [**Models**](#models) below for the `model` strings to pass on the OpenAI-compatible endpoint.
 
 <Note>
-  **Claude Code** uses the Anthropic Messages endpoint. Set `ANTHROPIC_BASE_URL=https://pass.wafer.ai` and `ANTHROPIC_API_KEY` to your Wafer key — Claude Code will hit `/v1/messages` automatically. To make sure Claude Code talks to a Wafer model, set `ANTHROPIC_DEFAULT_OPUS_MODEL`, `ANTHROPIC_DEFAULT_SONNET_MODEL`, `ANTHROPIC_DEFAULT_HAIKU_MODEL`, and `CLAUDE_CODE_SUBAGENT_MODEL` to one of the Wafer model IDs in [**Models**](#models) (e.g. `MiniMax-M2.7`). All other harnesses (OpenClaw, Cline, Roo Code, etc.) use the OpenAI-compatible endpoint at `https://pass.wafer.ai/v1`.
+  **Claude Code** uses the Anthropic Messages endpoint. Set `ANTHROPIC_BASE_URL=https://pass.wafer.ai` and `ANTHROPIC_API_KEY` to your Wafer key — Claude Code will hit `/v1/messages` automatically. To make sure Claude Code talks to a Wafer model, set `ANTHROPIC_DEFAULT_OPUS_MODEL`, `ANTHROPIC_DEFAULT_SONNET_MODEL`, `ANTHROPIC_DEFAULT_HAIKU_MODEL`, and `CLAUDE_CODE_SUBAGENT_MODEL` to one of the Wafer model IDs in [**Models**](#models) (e.g. `Qwen3.5-397B-A17B`). All other harnesses (OpenClaw, Cline, Roo Code, etc.) use the OpenAI-compatible endpoint at `https://pass.wafer.ai/v1`.
 </Note>
 
 ## What's Included
 
 With an active Wafer Pass subscription you get:
 
-* `Qwen3.5-397B-A17B`, `GLM-5.1`, `DeepSeek-V4-Pro`, and `MiniMax-M2.7` requests included in your plan's 5-hour window limit at zero per-token cost; overage is billed only for models with enabled per-token rates
+* `Qwen3.5-397B-A17B` and `GLM-5.1` requests included in your plan's 5-hour window limit at zero per-token cost; overage is billed only for models with enabled per-token rates
 * Access through a standard OpenAI-compatible API and an Anthropic-compatible Messages API using your Wafer API key
 * Works with [Claude Code](https://code.claude.com), [Codex](https://github.com/openai/codex), [Conductor](https://www.conductor.build/), [OpenClaw](https://openclaw.ai), [Hermes Agent](https://hermes-agent.nousresearch.com/), [Cline](https://cline.bot), [Roo Code](https://roocode.com), [Kilo Code](https://kilocode.ai), [OpenHands](https://docs.all-hands.dev/), and other agent harnesses
 * New fast models as we release them — same subscription, no price increase
@@ -46,29 +46,14 @@ With an active Wafer Pass subscription you get:
 
 | `model` string           | Family                  | Max context tokens | Notes                                                             |
 | ------------------------ | ----------------------- | ------------------ | ----------------------------------------------------------------- |
-| `DeepSeek-V4-Pro`        | DeepSeek, 1.6T MoE      | `262144`           | Frontier coding and reasoning, 49B active parameters; supports `thinking` |
 | `Qwen3.5-397B-A17B`      | Qwen3.5, 397B MoE       | `262144`           | Multiples faster than base SGLang on Wafer's stack                |
 | `GLM-5.1`                | Z.AI flagship           | `202752`           |                                                                   |
-| `MiniMax-M2.7`           | MiniMax, 230B MoE       | `204800`           | Long-context coding agents and tool-use workflows, 10B active parameters |
 
 The **Max context tokens** value is the hard cap enforced by the backend — requests where prompt tokens exceed this value return a `400`. If your harness has a **Context Window Size** setting (Cline, Roo Code, Droid, etc.), set it to the exact integer above. Leave ~2–4k of headroom for the model's response when filling context.
 
 Pass any `model` string above to any OpenAI-compatible harness configured against `https://pass.wafer.ai/v1`. Model names are **case-insensitive** — `GLM-5.1` and `glm-5.1` both work. If you pass a model name that doesn't match any available model, the API returns a `404` with the list of available models.
 
 For Claude Code and other Anthropic-compatible harnesses, set `ANTHROPIC_DEFAULT_*_MODEL` to one of the model IDs above. See [**Set Up Claude Code**](#set-up-claude-code).
-
-To enable extended thinking with `DeepSeek-V4-Pro` on OpenAI-compatible requests, include a `thinking` object in your JSON body:
-
-```json
-{
-  "model": "DeepSeek-V4-Pro",
-  "messages": [{ "role": "user", "content": "Solve this carefully." }],
-  "thinking": {
-    "type": "enabled",
-    "budget_tokens": 8000
-  }
-}
-```
 
 ## Pricing
 
@@ -104,8 +89,6 @@ All users pay the same overage rate regardless of plan tier.
 | ---------------------- | ---------------- | ---------------- | ----------------- |
 | `Qwen3.5-397B-A17B`    | \$0.60/M tokens  | \$3.60/M tokens  | \$0.06/M tokens   |
 | `GLM-5.1`              | \$1.50/M tokens  | \$4.50/M tokens  | \$0.15/M tokens   |
-
-`DeepSeek-V4-Pro` is included in your quota but does not yet support overage billing. Requests beyond your limit are rejected until the next window.
 
 Overage charges are calculated per 5-hour window and added to your next invoice.
 
@@ -167,24 +150,6 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
   <Step title="Pin a Wafer model">
     Claude Code sends Anthropic model strings (`claude-opus-…`, `claude-sonnet-…`) by default — those don't match a Wafer model. Pin Claude Code to a Wafer model with these env vars:
 
-    For `MiniMax-M2.7`:
-
-    ```bash
-    export ANTHROPIC_DEFAULT_OPUS_MODEL="MiniMax-M2.7"
-    export ANTHROPIC_DEFAULT_SONNET_MODEL="MiniMax-M2.7"
-    export ANTHROPIC_DEFAULT_HAIKU_MODEL="MiniMax-M2.7"
-    export CLAUDE_CODE_SUBAGENT_MODEL="MiniMax-M2.7"
-    ```
-
-    For `DeepSeek-V4-Pro`:
-
-    ```bash
-    export ANTHROPIC_DEFAULT_OPUS_MODEL="DeepSeek-V4-Pro"
-    export ANTHROPIC_DEFAULT_SONNET_MODEL="DeepSeek-V4-Pro"
-    export ANTHROPIC_DEFAULT_HAIKU_MODEL="DeepSeek-V4-Pro"
-    export CLAUDE_CODE_SUBAGENT_MODEL="DeepSeek-V4-Pro"
-    ```
-
     For `Qwen3.5-397B-A17B`:
 
     ```bash
@@ -210,10 +175,10 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
       "env": {
         "ANTHROPIC_BASE_URL": "https://pass.wafer.ai",
         "ANTHROPIC_API_KEY": "YOUR_WAFER_API_KEY",
-        "ANTHROPIC_DEFAULT_OPUS_MODEL": "MiniMax-M2.7",
-        "ANTHROPIC_DEFAULT_SONNET_MODEL": "MiniMax-M2.7",
-        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "MiniMax-M2.7",
-        "CLAUDE_CODE_SUBAGENT_MODEL": "MiniMax-M2.7"
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": "GLM-5.1",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": "GLM-5.1",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "GLM-5.1",
+        "CLAUDE_CODE_SUBAGENT_MODEL": "GLM-5.1"
       }
     }
     ```
@@ -234,7 +199,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
 
 ## Set Up Conductor
 
-[Conductor](https://www.conductor.build/) runs a team of parallel Claude Code agents in isolated Git worktrees on macOS. Because Conductor uses Claude Code under the hood, it picks up Wafer the same way Claude Code does — with an extra knob to pin the model to `MiniMax-M2.7`, `DeepSeek-V4-Pro`, `Qwen3.5-397B-A17B`, or `GLM-5.1`.
+[Conductor](https://www.conductor.build/) runs a team of parallel Claude Code agents in isolated Git worktrees on macOS. Because Conductor uses Claude Code under the hood, it picks up Wafer the same way Claude Code does — with an extra knob to pin the model to `Qwen3.5-397B-A17B` or `GLM-5.1`.
 
 <Steps>
   <Step title="Install Conductor">
@@ -258,24 +223,6 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
 
   <Step title="Pin a Wafer model">
     Conductor spawns Claude Code, which sends Anthropic model strings by default — those don't match a Wafer model. Pin Claude Code (and therefore Conductor) to a Wafer model with these env vars in the same Environment section:
-
-    For `MiniMax-M2.7`:
-
-    ```bash
-    export ANTHROPIC_DEFAULT_OPUS_MODEL="MiniMax-M2.7"
-    export ANTHROPIC_DEFAULT_SONNET_MODEL="MiniMax-M2.7"
-    export ANTHROPIC_DEFAULT_HAIKU_MODEL="MiniMax-M2.7"
-    export CLAUDE_CODE_SUBAGENT_MODEL="MiniMax-M2.7"
-    ```
-
-    For `DeepSeek-V4-Pro`:
-
-    ```bash
-    export ANTHROPIC_DEFAULT_OPUS_MODEL="DeepSeek-V4-Pro"
-    export ANTHROPIC_DEFAULT_SONNET_MODEL="DeepSeek-V4-Pro"
-    export ANTHROPIC_DEFAULT_HAIKU_MODEL="DeepSeek-V4-Pro"
-    export CLAUDE_CODE_SUBAGENT_MODEL="DeepSeek-V4-Pro"
-    ```
 
     For `Qwen3.5-397B-A17B`:
 
@@ -331,16 +278,6 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
 
     ```yaml
     model_list:
-      - model_name: MiniMax-M2.7
-        litellm_params:
-          model: openai/MiniMax-M2.7
-          api_base: https://pass.wafer.ai/v1
-          api_key: os.environ/WAFER_API_KEY
-      - model_name: DeepSeek-V4-Pro
-        litellm_params:
-          model: openai/DeepSeek-V4-Pro
-          api_base: https://pass.wafer.ai/v1
-          api_key: os.environ/WAFER_API_KEY
       - model_name: Qwen3.5-397B-A17B
         litellm_params:
           model: openai/Qwen3.5-397B-A17B
@@ -400,7 +337,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer <YOUR_WAFER_API_KEY>" \
       -d '{
-        "model": "MiniMax-M2.7",
+        "model": "Qwen3.5-397B-A17B",
         "input": "Reply with the single word: ready."
       }'
     ```
@@ -412,7 +349,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
     Add a Wafer model provider to `~/.codex/config.toml`:
 
     ```toml
-    model = "MiniMax-M2.7"
+    model = "Qwen3.5-397B-A17B"
     model_provider = "wafer"
 
     [model_providers.wafer]
@@ -425,7 +362,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
     `env_key` tells Codex which env var to read for the bearer token it sends to the local proxy. LiteLLM accepts that token (no proxy-side auth is configured here) and uses its own upstream `api_key: os.environ/WAFER_API_KEY` from `litellm_config.yaml` to call Wafer. Both ultimately read the same `WAFER_API_KEY` env var, so the call to Wafer is authenticated with your Wafer Pass key.
 
     <Note>
-      Switch models by changing the top-level `model = "..."` to `DeepSeek-V4-Pro`, `Qwen3.5-397B-A17B`, or `GLM-5.1`. The model IDs must match a `model_name` entry in your `litellm_config.yaml`.
+      Switch models by changing the top-level `model = "..."` to `Qwen3.5-397B-A17B` or `GLM-5.1`. The model IDs must match a `model_name` entry in your `litellm_config.yaml`.
     </Note>
   </Step>
 
@@ -435,7 +372,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
     codex
     ```
 
-    Codex now sends Responses-API traffic to LiteLLM, which forwards it to Wafer. The footer in the TUI should show the Wafer model id (e.g. `MiniMax-M2.7`).
+    Codex now sends Responses-API traffic to LiteLLM, which forwards it to Wafer. The footer in the TUI should show the Wafer model id (e.g. `Qwen3.5-397B-A17B`).
   </Step>
 </Steps>
 
@@ -446,7 +383,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
 ## Set Up OpenClaw
 
 <Note>
-  **Model string:** the examples below use `DeepSeek-V4-Pro`. To use a different model, swap that ID for `MiniMax-M2.7`, `Qwen3.5-397B-A17B`, or `GLM-5.1` anywhere a model ID appears. All four IDs are accepted on `https://pass.wafer.ai/v1`. Applies to every OpenAI-compatible setup section that follows (OpenClaw, Hermes Agent, Cline, Roo Code, Kilo Code, OpenHands, and the generic section at the bottom).
+  **Model string:** the examples below use `Qwen3.5-397B-A17B`. To use a different model, swap that ID for `GLM-5.1` anywhere a model ID appears. Those IDs are accepted on `https://pass.wafer.ai/v1`. Applies to every OpenAI-compatible setup section that follows (OpenClaw, Hermes Agent, Cline, Roo Code, Kilo Code, OpenHands, and the generic section at the bottom).
 </Note>
 
 <Steps>
@@ -482,11 +419,11 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
       "api": "openai-completions",
       "auth": "api-key",
       "apiKey": "YOUR_WAFER_API_KEY",
-      "models": [{ "id": "DeepSeek-V4-Pro", "name": "DeepSeek V4 Pro" }, { "id": "MiniMax-M2.7", "name": "MiniMax M2.7" }, { "id": "Qwen3.5-397B-A17B", "name": "Qwen 3.5 397B" }, { "id": "GLM-5.1", "name": "GLM 5.1" }]
+      "models": [{ "id": "Qwen3.5-397B-A17B", "name": "Qwen 3.5 397B" }, { "id": "GLM-5.1", "name": "GLM 5.1" }]
     }
     EOF
     )"
-    openclaw models set wafer/DeepSeek-V4-Pro
+    openclaw models set wafer/Qwen3.5-397B-A17B
     ```
 
     <Warning>
@@ -517,7 +454,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
     ```bash
     hermes config set OPENAI_BASE_URL https://pass.wafer.ai/v1
     hermes config set OPENAI_API_KEY YOUR_WAFER_API_KEY
-    hermes config set model DeepSeek-V4-Pro
+    hermes config set model Qwen3.5-397B-A17B
     ```
   </Step>
 
@@ -526,7 +463,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
     hermes
     ```
 
-    Hermes now uses `DeepSeek-V4-Pro` through the Wafer endpoint by default.
+    Hermes now uses `Qwen3.5-397B-A17B` through the Wafer endpoint by default.
   </Step>
 </Steps>
 
@@ -545,7 +482,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
 
     - **Base URL**: `https://pass.wafer.ai/v1`
     - **API Key**: your Wafer API key
-    - **Model ID**: `MiniMax-M2.7`
+    - **Model ID**: `Qwen3.5-397B-A17B`
 
     <Warning>
       Do not include `/chat/completions` in the Base URL — Cline appends that automatically.
@@ -555,7 +492,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
   <Step title="Set model info (recommended)">
     Expand **Model Configuration** and set:
 
-    - **Context Window Size**: `204800`
+    - **Context Window Size**: `262144`
     - **Max Output Tokens**: `32768`
     - **Supports Images**: unchecked
   </Step>
@@ -580,13 +517,13 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
 
     - **Base URL**: `https://pass.wafer.ai/v1`
     - **API Key**: your Wafer API key
-    - **Model ID**: `MiniMax-M2.7`
+    - **Model ID**: `Qwen3.5-397B-A17B`
   </Step>
 
   <Step title="Set model info (recommended)">
     Optionally configure:
 
-    - **Context Window Size**: `204800`
+    - **Context Window Size**: `262144`
     - **Max Output Tokens**: `32768`
   </Step>
 
@@ -612,7 +549,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
     - **Display Name**: `Wafer`
     - **Base URL**: `https://pass.wafer.ai/v1`
     - **API Key**: your Wafer API key
-    - **Model**: `MiniMax-M2.7`
+    - **Model**: `Qwen3.5-397B-A17B`
 
     5. Click **Save**
 
@@ -645,7 +582,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
     3. Click **Advanced** to expand advanced options
     4. Set these fields:
 
-    - **Custom Model**: `openai/MiniMax-M2.7`
+    - **Custom Model**: `openai/Qwen3.5-397B-A17B`
     - **Base URL**: `https://pass.wafer.ai/v1`
     - **API Key**: your Wafer API key
 
@@ -659,7 +596,7 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
 
     ```toml
     [llm]
-    model = "openai/MiniMax-M2.7"
+    model = "openai/Qwen3.5-397B-A17B"
     api_key = "YOUR_WAFER_API_KEY"
     base_url = "https://pass.wafer.ai/v1"
     ```
@@ -696,8 +633,6 @@ For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https
           iconURL: "https://avatars.githubusercontent.com/u/213847495?s=200&v=4"
           models:
             default:
-              - "MiniMax-M2.7"
-              - "DeepSeek-V4-Pro"
               - "Qwen3.5-397B-A17B"
               - "GLM-5.1"
             fetch: false
@@ -738,7 +673,7 @@ Most agent harnesses only need these settings:
 **OpenAI-compatible harnesses** (Cline, Roo Code, Kilo Code, OpenClaw, OpenHands, etc.):
 
 * **Base URL**: `https://pass.wafer.ai/v1`
-* **Model**: `MiniMax-M2.7`, `DeepSeek-V4-Pro`, `Qwen3.5-397B-A17B`, or `GLM-5.1`
+* **Model**: `Qwen3.5-397B-A17B` or `GLM-5.1`
 * **Authentication**: your Wafer API key
 * **Compatibility mode**: OpenAI-compatible / OpenAI API
 
@@ -746,17 +681,7 @@ Most agent harnesses only need these settings:
 {
   "baseUrl": "https://pass.wafer.ai/v1",
   "apiKey": "YOUR_WAFER_API_KEY",
-  "model": "DeepSeek-V4-Pro"
-}
-```
-
-Or, for MiniMax:
-
-```json
-{
-  "baseUrl": "https://pass.wafer.ai/v1",
-  "apiKey": "YOUR_WAFER_API_KEY",
-  "model": "MiniMax-M2.7"
+  "model": "Qwen3.5-397B-A17B"
 }
 ```
 
@@ -789,10 +714,10 @@ Or, for GLM:
 ```bash
 export ANTHROPIC_BASE_URL=https://pass.wafer.ai
 export ANTHROPIC_API_KEY=YOUR_WAFER_API_KEY
-export ANTHROPIC_DEFAULT_OPUS_MODEL="MiniMax-M2.7"
-export ANTHROPIC_DEFAULT_SONNET_MODEL="MiniMax-M2.7"
-export ANTHROPIC_DEFAULT_HAIKU_MODEL="MiniMax-M2.7"
-export CLAUDE_CODE_SUBAGENT_MODEL="MiniMax-M2.7"
+export ANTHROPIC_DEFAULT_OPUS_MODEL="GLM-5.1"
+export ANTHROPIC_DEFAULT_SONNET_MODEL="GLM-5.1"
+export ANTHROPIC_DEFAULT_HAIKU_MODEL="GLM-5.1"
+export CLAUDE_CODE_SUBAGENT_MODEL="GLM-5.1"
 ```
 
 If the harness asks for a provider name, you can label it `Wafer`. If it asks whether your key is a bearer token or an API key, pass your Wafer Pass API key as the API key.
@@ -810,11 +735,11 @@ Violations of these terms may result in pass revocation without refund. See the 
 
 <AccordionGroup>
   <Accordion title="What models do I get?">
-    Wafer Pass currently gives you `MiniMax-M2.7`, `DeepSeek-V4-Pro`, `Qwen3.5-397B-A17B`, and `GLM-5.1` through the Wafer endpoint. More fast open models are coming on the same subscription.
+    Wafer Pass currently gives you `Qwen3.5-397B-A17B` and `GLM-5.1` through the Wafer endpoint. More fast open models are coming on the same subscription.
   </Accordion>
 
   <Accordion title="Can I use Wafer Pass with any model?">
-    Wafer Pass currently covers `MiniMax-M2.7`, `DeepSeek-V4-Pro`, `Qwen3.5-397B-A17B`, and `GLM-5.1`. We're adding more models soon — same subscription, no price increase.
+    Wafer Pass currently covers `Qwen3.5-397B-A17B` and `GLM-5.1`. We're adding more models soon — same subscription, no price increase.
   </Accordion>
 
   <Accordion title="Can I share my subscription?">
@@ -826,7 +751,7 @@ Violations of these terms may result in pass revocation without refund. See the 
   </Accordion>
 
   <Accordion title="Do I need a special model ID?">
-    For OpenAI-compatible harnesses, yes — use `MiniMax-M2.7`, `DeepSeek-V4-Pro`, `Qwen3.5-397B-A17B`, or `GLM-5.1` with the `https://pass.wafer.ai/v1` endpoint. Model names are case-insensitive. For Claude Code (Anthropic-compatible), pin a Wafer model via `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL` / `ANTHROPIC_DEFAULT_HAIKU_MODEL` / `CLAUDE_CODE_SUBAGENT_MODEL`.
+    For OpenAI-compatible harnesses, yes — use `Qwen3.5-397B-A17B` or `GLM-5.1` with the `https://pass.wafer.ai/v1` endpoint. Model names are case-insensitive. For Claude Code (Anthropic-compatible), pin a Wafer model via `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL` / `ANTHROPIC_DEFAULT_HAIKU_MODEL` / `CLAUDE_CODE_SUBAGENT_MODEL`.
   </Accordion>
 
   <Accordion title="Why does Codex need a LiteLLM proxy?">
