@@ -1,0 +1,163 @@
+---
+title: Set Up OpenCode
+description: "Configure Wafer Pass with OpenCode TUI and Desktop app."
+---
+
+## OpenCode TUI
+
+<Steps>
+  <Step title="Open OpenCode TUI">
+    Launch OpenCode from your terminal:
+    
+    ```bash
+    opencode
+    ```
+  </Step>
+
+  <Step title="Use /connect command">
+    In the OpenCode TUI, type `/connect` and press Enter:
+    
+    ```
+    /connect
+    ```
+  </Step>
+
+  <Step title="Select Wafer">
+    Search for and select **Wafer** from the provider list.
+  </Step>
+
+  <Step title="Enter API Key">
+    Paste your Wafer Pass API key when prompted.
+  </Step>
+
+  <Step title="Select a Model">
+    Type `/models` and choose `Qwen3.5-397B-A17B` or `GLM-5.1` from the model
+    selection menu.
+  </Step>
+</Steps>
+
+## OpenCode Desktop
+
+<Steps>
+  <Step title="Open OpenCode Desktop">
+    Launch the OpenCode Desktop application.
+  </Step>
+
+  <Step title="Open Command Palette">
+    Press `Ctrl+K` (or `Cmd+K` on macOS) to open the Command Palette.
+  </Step>
+
+  <Step title="Connect Provider">
+    Type **Connect Provider** and select it from the command list.
+  </Step>
+
+  <Step title="Select Wafer">
+    Search for and select **Wafer** from the provider list.
+  </Step>
+
+  <Step title="Enter API Key">
+    Paste your Wafer Pass API key when prompted.
+  </Step>
+
+  <Step title="Select a Model">
+    Click the model name in the bottom status bar and select
+    `Qwen3.5-397B-A17B` or `GLM-5.1`.
+
+    <Note>
+      You may need to restart OpenCode Desktop for newly added models to
+      appear.
+    </Note>
+  </Step>
+</Steps>
+
+## Missing Models?
+
+OpenCode sources its model list from [models.dev](https://models.dev), not from the
+`/v1/models` endpoint. New Wafer models may not appear immediately in the model
+picker - a PR to models.dev is needed.
+
+### Step 1: Test Locally
+
+Add the missing models to your global config at `~/.config/opencode/opencode.json`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "wafer.ai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Wafer",
+      "options": {
+        "baseURL": "https://pass.wafer.ai/v1",
+        "apiKey": "{env:WAFER_API_KEY}"
+      },
+      "models": {
+        "MiniMax-M2.7": {
+          "name": "MiniMax-M2.7",
+          "limit": {
+            "context": 204800,
+            "output": 131072
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The example above adds `MiniMax-M2.7`. Add more models by adding additional
+entries under `"models"` following the same pattern.
+
+Restart OpenCode. The models will appear in your model picker. Test that they work correctly.
+
+<Note>
+  Use `WAFER_API_KEY` environment variable, or replace `"{env:WAFER_API_KEY}"` with your actual API key.
+</Note>
+
+### Step 2: Add to models.dev
+
+Once tested, submit a PR to
+[models.dev](https://github.com/anomalyco/models.dev) to make the models
+available to all users:
+
+1. Fork the [models.dev repository](https://github.com/anomalyco/models.dev)
+2. Create a new branch with your changes
+3. Add a new model file in `providers/wafer.ai/models/` (e.g., `MiniMax-M2.7.toml`)
+4. Open a PR with a clear description
+
+Example model file (`providers/wafer.ai/models/MiniMax-M2.7.toml`):
+
+```toml
+[extends]
+from = "minimax/MiniMax-M2.7"
+
+[cost]
+input = 0
+output = 0
+cache_read = 0
+cache_write = 0
+```
+
+This inherits all metadata from the canonical model and overrides only the
+pricing for Wafer Pass. See
+[PR #1729](https://github.com/anomalyco/models.dev/pull/1729) for a real
+example.
+
+Once merged, the model will appear in OpenCode's model picker for all users
+after the next models.dev sync. Run `opencode models --refresh` to force an
+update.
+
+## Optimization
+
+### Small Model for Simple Tasks
+
+Set `small_model` in `opencode.json` for simple tasks like session title generation:
+
+```json
+{
+  "small_model": "wafer.ai/Qwen3.5-397B-A17B"
+}
+```
+
+Helps improve speed/quota.
+See [OpenCode docs](https://opencode.ai/docs/config/#models) as reference.
