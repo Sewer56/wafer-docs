@@ -1,0 +1,36 @@
+---
+title: Set Up Roo Code
+description: "Configure Wafer Pass with Roo Code for VS Code."
+---
+
+<Note>
+  **Model string:** the examples below use `Qwen3.5-397B-A17B`. To use a different model, swap that ID for `GLM-5.1` anywhere a model ID appears.
+</Note>
+
+<Steps>
+  <Step title="Install Roo Code">
+    Install the [Roo Code extension](https://marketplace.visualstudio.com/items?itemName=RooVetGit.Roo-Code) from the VS Code marketplace, or search "Roo Code" in VS Code Extensions.
+  </Step>
+
+  <Step title="Configure Wafer as a provider">
+    1. Open VS Code and click the **Roo Code** icon in the sidebar
+    2. Click the **settings gear** icon in the Roo Code panel
+    3. In the **API Provider** dropdown, select **OpenAI Compatible**
+    4. Fill in these fields:
+
+    - **Base URL**: `https://pass.wafer.ai/v1`
+    - **API Key**: your Wafer API key
+    - **Model ID**: `Qwen3.5-397B-A17B`
+  </Step>
+
+  <Step title="Set model info (recommended)">
+    Optionally configure:
+
+    - **Context Window Size**: `262144`
+    - **Max Output Tokens**: `32768`
+  </Step>
+
+  <Step title="Start coding">
+    Send a message in the Roo Code panel to confirm the connection.
+  </Step>
+</Steps>

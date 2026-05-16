@@ -1,0 +1,35 @@
+---
+title: Set Up Hermes Agent
+description: "Configure Wafer Pass with Hermes Agent."
+---
+
+<Note>
+  **Model string:** the examples below use `Qwen3.5-397B-A17B`. To use a different model, swap that ID for `GLM-5.1` anywhere a model ID appears.
+</Note>
+
+<Steps>
+  <Step title="Install Hermes Agent">
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+    source ~/.bashrc   # or source ~/.zshrc
+    ```
+  </Step>
+
+  <Step title="Point Hermes at Wafer">
+    Replace `YOUR_WAFER_API_KEY` with your Wafer Pass API key:
+
+    ```bash
+    hermes config set OPENAI_BASE_URL https://pass.wafer.ai/v1
+    hermes config set OPENAI_API_KEY YOUR_WAFER_API_KEY
+    hermes config set model Qwen3.5-397B-A17B
+    ```
+  </Step>
+
+  <Step title="Start a session">
+    ```bash
+    hermes
+    ```
+
+    Hermes now uses `Qwen3.5-397B-A17B` through the Wafer endpoint by default.
+  </Step>
+</Steps>

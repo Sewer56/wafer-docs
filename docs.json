@@ -25,7 +25,17 @@
       {
         "group": "Wafer Pass",
         "pages": [
-          "wafer-pass"
+          "wafer-pass/index",
+          "wafer-pass/claude-code",
+          "wafer-pass/conductor",
+          "wafer-pass/codex",
+          "wafer-pass/openclaw",
+          "wafer-pass/hermes-agent",
+          "wafer-pass/cline",
+          "wafer-pass/roo-code",
+          "wafer-pass/kilo-code",
+          "wafer-pass/openhands",
+          "wafer-pass/librechat"
         ]
       },
       {

@@ -1,0 +1,91 @@
+---
+title: Set Up Claude Code
+description: "Configure Wafer Pass with Claude Code using the Anthropic-compatible Messages endpoint."
+---
+
+Wafer exposes an Anthropic-compatible Messages endpoint at `https://pass.wafer.ai/v1/messages`, so Claude Code can connect directly — no proxy needed.
+
+For Claude Code, set `ANTHROPIC_BASE_URL` to `https://pass.wafer.ai`, not `https://pass.wafer.ai/v1`.
+
+<Steps>
+  <Step title="Install Claude Code">
+    ```bash
+    npm install -g @anthropic-ai/claude-code
+    ```
+  </Step>
+
+  <Step title="Configure Wafer as the endpoint">
+    Set these environment variables in your shell profile (`~/.zshrc`, `~/.bashrc`, etc.):
+
+    ```bash
+    export ANTHROPIC_BASE_URL=https://pass.wafer.ai
+    export ANTHROPIC_API_KEY=YOUR_WAFER_API_KEY
+    ```
+
+    Or add them to `~/.claude/settings.json` for a persistent, per-user config:
+
+    ```json
+    {
+      "env": {
+        "ANTHROPIC_BASE_URL": "https://pass.wafer.ai",
+        "ANTHROPIC_API_KEY": "YOUR_WAFER_API_KEY"
+      }
+    }
+    ```
+
+    Replace `YOUR_WAFER_API_KEY` with your Wafer Pass API key.
+
+    <Warning>
+      Do not share your API key or commit it to version control.
+    </Warning>
+  </Step>
+
+  <Step title="Pin a Wafer model">
+    Claude Code sends Anthropic model strings (`claude-opus-…`, `claude-sonnet-…`) by default — those don't match a Wafer model. Pin Claude Code to a Wafer model with these env vars:
+
+    For `Qwen3.5-397B-A17B`:
+
+    ```bash
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="Qwen3.5-397B-A17B"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="Qwen3.5-397B-A17B"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="Qwen3.5-397B-A17B"
+    export CLAUDE_CODE_SUBAGENT_MODEL="Qwen3.5-397B-A17B"
+    ```
+
+    For `GLM-5.1`:
+
+    ```bash
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="GLM-5.1"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="GLM-5.1"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="GLM-5.1"
+    export CLAUDE_CODE_SUBAGENT_MODEL="GLM-5.1"
+    ```
+
+    Or in `~/.claude/settings.json`:
+
+    ```json
+    {
+      "env": {
+        "ANTHROPIC_BASE_URL": "https://pass.wafer.ai",
+        "ANTHROPIC_API_KEY": "YOUR_WAFER_API_KEY",
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": "GLM-5.1",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": "GLM-5.1",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "GLM-5.1",
+        "CLAUDE_CODE_SUBAGENT_MODEL": "GLM-5.1"
+      }
+    }
+    ```
+
+    <Note>
+      These env vars follow the same pattern as [OpenRouter's Claude Code integration](https://openrouter.ai/docs/guides/coding-agents/claude-code-integration). They override the model Claude Code sends for opus, sonnet, haiku, and subagent calls.
+    </Note>
+  </Step>
+
+  <Step title="Start Claude Code">
+    ```bash
+    claude
+    ```
+
+    Claude Code now routes requests through the Wafer endpoint.
+  </Step>
+</Steps>

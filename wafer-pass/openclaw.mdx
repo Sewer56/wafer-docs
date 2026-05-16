@@ -1,0 +1,60 @@
+---
+title: Set Up OpenClaw
+description: "Configure Wafer Pass with OpenClaw."
+---
+
+<Note>
+  **Model string:** the examples below use `Qwen3.5-397B-A17B`. To use a different model, swap that ID for `GLM-5.1` anywhere a model ID appears. Those IDs are accepted on `https://pass.wafer.ai/v1`.
+</Note>
+
+<Steps>
+  <Step title="Install OpenClaw">
+    <Tabs>
+      <Tab title="macOS / Linux">
+        ```bash
+        curl -fsSL https://openclaw.ai/install.sh | bash
+        ```
+      </Tab>
+
+      <Tab title="Windows (PowerShell)">
+        ```powershell
+        iwr -useb https://openclaw.ai/install.ps1 | iex
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Run setup">
+    ```bash
+    openclaw setup
+    ```
+  </Step>
+
+  <Step title="Add Wafer as a provider">
+    Replace `YOUR_WAFER_API_KEY` with your Wafer Pass API key:
+
+    ```bash
+    openclaw config set models.providers.wafer "$(cat <<'EOF'
+    {
+      "baseUrl": "https://pass.wafer.ai/v1",
+      "api": "openai-completions",
+      "auth": "api-key",
+      "apiKey": "YOUR_WAFER_API_KEY",
+      "models": [{ "id": "Qwen3.5-397B-A17B", "name": "Qwen 3.5 397B" }, { "id": "GLM-5.1", "name": "GLM 5.1" }]
+    }
+    EOF
+    )"
+    openclaw models set wafer/Qwen3.5-397B-A17B
+    ```
+
+    <Warning>
+      Do not share your API key or commit it to version control.
+    </Warning>
+  </Step>
+
+  <Step title="Test it">
+    ```bash
+    openclaw agent --local --session-id wafer-test --message "Hello"
+    ```
+  </Step>
+</Steps>

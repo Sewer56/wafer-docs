@@ -1,0 +1,65 @@
+---
+title: Set Up LibreChat
+description: "Configure Wafer Pass with LibreChat."
+---
+
+<Note>
+  **Model string:** the examples below use `Qwen3.5-397B-A17B`. To use a different model, swap that ID for `GLM-5.1` anywhere a model ID appears.
+</Note>
+
+<Steps>
+  <Step title="Install LibreChat">
+    Follow the [LibreChat installation guide](https://www.librechat.ai/docs/installation). The quickest way is Docker:
+
+    ```bash
+    git clone https://github.com/danny-avila/LibreChat.git
+    cd LibreChat
+    cp .env.example .env
+    docker compose up -d
+    ```
+  </Step>
+
+  <Step title="Add Wafer as a provider">
+    Edit `librechat.yaml` in the project root and add a Wafer endpoint:
+
+    ```yaml
+    endpoints:
+      custom:
+        - name: "Wafer"
+          baseURL: "https://pass.wafer.ai/v1"
+          apiKey: "${WAFER_API_KEY}"
+          iconURL: "https://avatars.githubusercontent.com/u/213847495?s=200&v=4"
+          models:
+            default:
+              - "Qwen3.5-397B-A17B"
+              - "GLM-5.1"
+            fetch: false
+          titleConvo: true
+          modelDisplayLabel: "Wafer"
+    ```
+
+    Set your API key in your `.env` file:
+
+    ```bash
+    WAFER_API_KEY=YOUR_WAFER_API_KEY
+    ```
+
+    Replace `YOUR_WAFER_API_KEY` with your Wafer Pass API key.
+
+    <Warning>
+      Do not share your API key or commit it to version control.
+    </Warning>
+
+    <Note>
+      The `default` list above exposes all Wafer models in LibreChat's model picker. Drop any IDs you don't want to surface.
+    </Note>
+  </Step>
+
+  <Step title="Restart and verify">
+    ```bash
+    docker compose restart
+    ```
+
+    Open LibreChat in your browser, select **Wafer** from the endpoint dropdown, and send a message.
+  </Step>
+</Steps>

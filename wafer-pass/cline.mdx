@@ -1,0 +1,41 @@
+---
+title: Set Up Cline
+description: "Configure Wafer Pass with Cline for VS Code."
+---
+
+<Note>
+  **Model string:** the examples below use `Qwen3.5-397B-A17B`. To use a different model, swap that ID for `GLM-5.1` anywhere a model ID appears.
+</Note>
+
+<Steps>
+  <Step title="Install Cline">
+    Install the [Cline extension](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev) from the VS Code marketplace, or search "Cline" in VS Code Extensions.
+  </Step>
+
+  <Step title="Configure Wafer as a provider">
+    1. Open VS Code and click the **Cline** icon in the sidebar
+    2. Click the **settings gear** icon in the Cline panel
+    3. In the **API Provider** dropdown, select **OpenAI Compatible**
+    4. Fill in these fields:
+
+    - **Base URL**: `https://pass.wafer.ai/v1`
+    - **API Key**: your Wafer API key
+    - **Model ID**: `Qwen3.5-397B-A17B`
+
+    <Warning>
+      Do not include `/chat/completions` in the Base URL — Cline appends that automatically.
+    </Warning>
+  </Step>
+
+  <Step title="Set model info (recommended)">
+    Expand **Model Configuration** and set:
+
+    - **Context Window Size**: `262144`
+    - **Max Output Tokens**: `32768`
+    - **Supports Images**: unchecked
+  </Step>
+
+  <Step title="Verify the connection">
+    Send a message in the Cline panel. If Cline responds, you're connected.
+  </Step>
+</Steps>
