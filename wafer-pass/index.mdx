@@ -1,8 +1,6 @@
 ---
 title: Wafer Pass Setup
-description: "Fast open-source LLMs for Claude Code, Codex, Conductor, OpenClaw,
-Hermes Agent, Cline, Roo Code, Kilo Code, OpenHands, and other coding agent
-harnesses."
+description: "Fast open-source LLMs for coding agent harnesses — Claude Code, Codex, Cline, and more."
 ---
 
 <Note>
@@ -18,19 +16,13 @@ harnesses."
 [OpenCode](/wafer-pass/opencode)
 
 Wafer builds AI that optimizes AI. We take open models and make them dramatically faster. Wafer Pass
-currently gives you access to **`Qwen3.5-397B-A17B`** and **`GLM-5.1`**, all served at multiples of
-the speed of generic inference providers. More fast open models land on the same subscription — no
-price increase.
+currently gives you **`Qwen3.5-397B-A17B`** and **`GLM-5.1`**, served at multiples of generic
+inference providers. More fast open models land on the same subscription — no price increase.
 
-Wafer Pass is built for [Claude Code], [Codex], [Conductor], [OpenClaw], [Hermes Agent],
-[Cline](https://cline.bot), [Roo Code](https://roocode.com), [Kilo Code](https://kilocode.ai),
-[OpenHands], and other agent harnesses. Wafer exposes both an OpenAI-compatible endpoint and an
-Anthropic-compatible Messages endpoint, so tools like Claude Code work out of the box.
+Wafer exposes both an OpenAI-compatible endpoint and an Anthropic-compatible Messages endpoint, so
+tools like Claude Code work out of the box.
 
-Get a Wafer Pass for fast open-source models through a standard API endpoint. Plans start at
-$10/week.
-
-> Get your Wafer Pass: https://www.wafer.ai/pass
+Plans start at $3/week — [get your Wafer Pass](https://www.wafer.ai/pass).
 
 ## Connection Details
 
@@ -45,27 +37,37 @@ Use your Wafer Pass API key with these values:
 See [**Models**](#models) below for the `model` strings to pass on the OpenAI-compatible endpoint.
 
 <Note>
-  **Claude Code** uses the Anthropic Messages endpoint. Set
-  `ANTHROPIC_BASE_URL=https://pass.wafer.ai` and `ANTHROPIC_API_KEY` to your Wafer key — Claude Code
-  will hit `/v1/messages` automatically. To make sure Claude Code talks to a Wafer model, set
-  `ANTHROPIC_DEFAULT_OPUS_MODEL`, `ANTHROPIC_DEFAULT_SONNET_MODEL`,
-  `ANTHROPIC_DEFAULT_HAIKU_MODEL`, and `CLAUDE_CODE_SUBAGENT_MODEL` to one of the Wafer model IDs in
-  [**Models**](#models) (e.g. `Qwen3.5-397B-A17B`). All other harnesses (OpenClaw, Cline, Roo Code,
-  etc.) use the OpenAI-compatible endpoint at `https://pass.wafer.ai/v1`.
+  Claude Code and Conductor use the Anthropic Messages endpoint — see
+  [Set Up Claude Code](/wafer-pass/claude-code) or
+  [Set Up Conductor](/wafer-pass/conductor). All other harnesses use the
+  OpenAI-compatible endpoint above.
 </Note>
+
+For harnesses not listed at the top of this page, copy these OpenAI-compatible settings:
+
+* **Base URL**: `https://pass.wafer.ai/v1`
+* **Model**: `Qwen3.5-397B-A17B` or `GLM-5.1`
+* **Compatibility mode**: OpenAI-compatible / OpenAI API
+
+```json
+{
+  "baseUrl": "https://pass.wafer.ai/v1",
+  "apiKey": "YOUR_WAFER_API_KEY",
+  "model": "Qwen3.5-397B-A17B"
+}
+```
+
+If the harness asks for a provider name, label it `Wafer`. If it asks whether your key is a
+bearer token or an API key, select API key.
 
 ## What's Included
 
-With an active Wafer Pass subscription you get:
+Your Wafer Pass subscription includes:
 
 * `Qwen3.5-397B-A17B` and `GLM-5.1` requests included in your plan's 5-hour window limit at zero
-  per-token cost; overage is billed only for models with enabled per-token rates
+  per-token cost
 * Access through a standard OpenAI-compatible API and an Anthropic-compatible Messages API using
   your Wafer API key
-* Works with [Claude Code], [Codex], [Conductor], [OpenClaw], [Hermes Agent],
-  [Cline](https://cline.bot), [Roo Code](https://roocode.com), [Kilo Code](https://kilocode.ai),
-  [OpenHands], and other agent harnesses
-* New fast models as we release them — same subscription, no price increase
 
 ## Models
 
@@ -74,56 +76,44 @@ With an active Wafer Pass subscription you get:
 | `Qwen3.5-397B-A17B`      | Qwen3.5, 397B MoE       | `262144`           | Multiples faster than base SGLang on Wafer's stack                |
 | `GLM-5.1`                | Z.AI flagship           | `202752`           |                                                                   |
 
-The **Max context tokens** value is the hard cap enforced by the backend — requests where prompt
-tokens exceed this value return a `400`. If your harness has a **Context Window Size** setting
-(Cline, Roo Code, Droid, etc.), set it to the exact integer above. Leave ~2–4k of headroom for the
-model's response when filling context.
+**Max context tokens** is the hard limit — requests that exceed it return a `400`. If your harness
+has a **Context Window Size** setting (Cline, Roo Code, Droid, etc.), set it to the exact value from
+the table. Reserve ~2–4k tokens for the model's response.
 
-Pass any `model` string above to any OpenAI-compatible harness configured against
-`https://pass.wafer.ai/v1`. Model names are **case-insensitive** — `GLM-5.1` and `glm-5.1` both
-work. If you pass a model name that doesn't match any available model, the API returns a `404` with
-the list of available models.
-
-For Claude Code and other Anthropic-compatible harnesses, set `ANTHROPIC_DEFAULT_*_MODEL` to one of
-the model IDs above. See [**Set Up Claude Code**](/wafer-pass/claude-code).
+Pass any `model` string from the table to an OpenAI-compatible harness pointed at
+`https://pass.wafer.ai/v1`. Model names are **case-insensitive** (`GLM-5.1` = `glm-5.1`). An
+unknown model name returns a `404` with the list of available models.
 
 ## Pricing
 
-Pay weekly, monthly, or save **20% off the weekly rate** with yearly billing.
+Save **20%** with yearly billing.
 
-### Weekly
+| Plan          | For                                  | Requests / 5hr window | Includes                     |
+| ------------- | ------------------------------------ | --------------------- | ---------------------------- |
+| **Starter**   | Solo devs, daily agents              | 1,000                 | Access to every model Wafer hosts |
+| **Privacy**   | Production agents, private workloads | 2,000                 | Zero Data Retention          |
 
-| Plan          | For                                  | Price      | Requests / 5hr window | Includes               |
-| ------------- | ------------------------------------ | ---------- | --------------------- | ---------------------- |
-| **Starter**   | Solo devs, daily agents              | \$10/wk    | 1,000                 | Access to every model Wafer hosts |
-| **Privacy**   | Production agents, private workloads | \$25/wk    | 2,000                 | Zero Data Retention    |
-
-### Monthly
-
-| Plan          | For                                  | Price      | Requests / 5hr window | Includes               |
-| ------------- | ------------------------------------ | ---------- | --------------------- | ---------------------- |
-| **Starter**   | Solo devs, daily agents              | \$40/mo    | 1,000                 | Access to every model Wafer hosts |
-| **Privacy**   | Production agents, private workloads | \$100/mo   | 2,000                 | Zero Data Retention    |
-
-### Yearly (20% off the weekly rate)
-
-| Plan          | Price        | Effective weekly | Requests / 5hr window |
-| ------------- | ------------ | ---------------- | --------------------- |
-| **Starter**   | \$416/yr     | \$8/wk           | 1,000                 |
-| **Privacy**   | \$1040/yr    | \$20/wk          | 2,000                 |
+| Plan          | Weekly   | Monthly    | Yearly                |
+| ------------- | -------- | ---------- | --------------------- |
+| **Starter**   | \$10/wk  | \$40/mo    | \$416/yr (\$8/wk)     |
+| **Privacy**   | \$25/wk  | \$100/mo   | \$1,040/yr (\$20/wk)  |
 
 ### Overage Pricing
 
-Requests beyond your plan's included 5-hour window limit are billed at per-model API rates for
-models with overage enabled.
-All users pay the same overage rate regardless of plan tier.
+<Warning>
+  Overage is **opt-in** — you must enable it per model.
 
-| Model                  | Input            | Output           | Cached Input      |
-| ---------------------- | ---------------- | ---------------- | ----------------- |
-| `Qwen3.5-397B-A17B`    | \$0.60/M tokens  | \$3.60/M tokens  | \$0.06/M tokens   |
-| `GLM-5.1`              | \$1.50/M tokens  | \$4.50/M tokens  | \$0.15/M tokens   |
+  Without overage enabled, requests that exceed your window limit are rejected rather than billed.
+</Warning>
 
-Overage charges are calculated per 5-hour window and added to your next invoice.
+Rates are the same across all plan tiers.
+
+| Model                | Input           | Output          | Cached Input     |
+| -------------------- | --------------- | --------------- | ---------------- |
+| `Qwen3.5-397B-A17B`  | $0.60/M tokens  | $3.60/M tokens  | $0.06/M tokens   |
+| `GLM-5.1`            | $1.50/M tokens  | $4.50/M tokens  | $0.15/M tokens   |
+
+Overage is billed per 5-hour window and added to your next invoice.
 
 ## Getting Started
 
@@ -139,82 +129,25 @@ Overage charges are calculated per 5-hour window and added to your next invoice.
   </Step>
 
   <Step title="Start coding">
-    Use the key in Claude Code, Codex, Conductor, OpenClaw, Cline, Roo Code, Kilo Code, Hermes
-    Agent, OpenHands, OpenCode, or any other supported harness.
+    Configure your harness with the endpoint and API key. See the setup guide for
+    your tool: [Claude Code](/wafer-pass/claude-code), [Cline](/wafer-pass/cline),
+    [Roo Code](/wafer-pass/roo-code), [Codex](/wafer-pass/codex), or
+    [another harness](#connection-details).
   </Step>
 </Steps>
 
-## Use Wafer with Other Harnesses
-
-Most agent harnesses only need these settings:
-
-**OpenAI-compatible harnesses** (Cline, Roo Code, Kilo Code, OpenClaw, OpenHands, etc.):
-
-* **Base URL**: `https://pass.wafer.ai/v1`
-* **Model**: `Qwen3.5-397B-A17B` or `GLM-5.1`
-* **Authentication**: your Wafer API key
-* **Compatibility mode**: OpenAI-compatible / OpenAI API
-
-```json
-{
-  "baseUrl": "https://pass.wafer.ai/v1",
-  "apiKey": "YOUR_WAFER_API_KEY",
-  "model": "Qwen3.5-397B-A17B"
-}
-```
-
-Or, for Qwen:
-
-```json
-{
-  "baseUrl": "https://pass.wafer.ai/v1",
-  "apiKey": "YOUR_WAFER_API_KEY",
-  "model": "Qwen3.5-397B-A17B"
-}
-```
-
-Or, for GLM:
-
-```json
-{
-  "baseUrl": "https://pass.wafer.ai/v1",
-  "apiKey": "YOUR_WAFER_API_KEY",
-  "model": "GLM-5.1"
-}
-```
-
-**Anthropic-compatible harnesses** (Claude Code, Conductor, or any tool using the Anthropic Messages
-API):
-
-* **Base URL**: `https://pass.wafer.ai` (the tool appends `/v1/messages` automatically)
-* **Authentication**: your Wafer API key via `ANTHROPIC_API_KEY`
-* **Model**: pin a Wafer model via `ANTHROPIC_DEFAULT_*_MODEL` (the harness's default Anthropic
-  model strings don't match a Wafer model)
-
-```bash
-export ANTHROPIC_BASE_URL=https://pass.wafer.ai
-export ANTHROPIC_API_KEY=YOUR_WAFER_API_KEY
-export ANTHROPIC_DEFAULT_OPUS_MODEL="GLM-5.1"
-export ANTHROPIC_DEFAULT_SONNET_MODEL="GLM-5.1"
-export ANTHROPIC_DEFAULT_HAIKU_MODEL="GLM-5.1"
-export CLAUDE_CODE_SUBAGENT_MODEL="GLM-5.1"
-```
-
-If the harness asks for a provider name, you can label it `Wafer`. If it asks whether your key is a
-bearer token or an API key, pass your Wafer Pass API key as the API key.
-
 ## Terms of Use
 
-Wafer Pass is intended for personal agentic coding use only. By purchasing Wafer Pass you agree to
-the following:
+Wafer Pass is intended for personal agentic coding use only.
+
+By purchasing Wafer Pass you agree to the following:
 
 * **Allowed:** Personal development, experimentation, and coding with agentic harnesses
   ([Claude Code], [OpenCode](https://opencode.ai), [Cline](https://cline.bot),
   [Kilo Code](https://kilocode.ai), [OpenClaw](https://openclaw.ai),
   [LangChain Deep Agents], and similar tools).
 * **Prohibited:** Production workloads, team or shared usage (one account per person, max 3
-  concurrent in-flight requests), reselling or pooling access, and any use that violates the
-  [Wafer Terms of Service].
+  concurrent in-flight requests), reselling or pooling access.
 
 Violations of these terms may result in pass revocation without refund. See the full
 [Wafer Terms of Service] for details.
@@ -222,14 +155,9 @@ Violations of these terms may result in pass revocation without refund. See the 
 ## FAQ
 
 <AccordionGroup>
-  <Accordion title="What models do I get?">
-    Wafer Pass currently gives you `Qwen3.5-397B-A17B` and `GLM-5.1` through the Wafer endpoint.
-    More fast open models are coming on the same subscription.
-  </Accordion>
-
-  <Accordion title="Can I use Wafer Pass with any model?">
-    Wafer Pass currently covers `Qwen3.5-397B-A17B` and `GLM-5.1`. We're adding more models soon —
-    same subscription, no price increase.
+  <Accordion title="What models are included, and will more be added?">
+    Wafer Pass currently covers `Qwen3.5-397B-A17B` and `GLM-5.1`. We're optimizing more fast
+    open-source models and adding them to the plan — same subscription, no price increase.
   </Accordion>
 
   <Accordion title="Can I share my subscription?">
@@ -247,25 +175,10 @@ Violations of these terms may result in pass revocation without refund. See the 
   </Accordion>
 
   <Accordion title="Do I need a special model ID?">
-    For OpenAI-compatible harnesses, yes — use `Qwen3.5-397B-A17B` or `GLM-5.1` with the
-    `https://pass.wafer.ai/v1` endpoint. Model names are case-insensitive. For Claude Code
-    (Anthropic-compatible), pin a Wafer model via `ANTHROPIC_DEFAULT_OPUS_MODEL` /
-    `ANTHROPIC_DEFAULT_SONNET_MODEL` / `ANTHROPIC_DEFAULT_HAIKU_MODEL` /
-    `CLAUDE_CODE_SUBAGENT_MODEL`.
-  </Accordion>
-
-  <Accordion title="Why does Codex need a LiteLLM proxy?">
-    Codex CLI removed support for the OpenAI Chat Completions wire format in February 2026
-    (`wire_api = "chat"` is no longer accepted) and now requires the OpenAI Responses API
-    (`/v1/responses`). Wafer Pass exposes Chat Completions (`/v1/chat/completions`), so the local
-    LiteLLM proxy translates between the two. See [**Set Up Codex**](/wafer-pass/codex) for the
-    config. The proxy is only needed for Codex — every other harness on this page (Claude Code,
-    Conductor, OpenClaw, Cline, Roo Code, Kilo Code, Hermes Agent, OpenHands, LibreChat) talks to
-    Wafer directly.
-  </Accordion>
-
-  <Accordion title="Will more models be added?">
-    Yes. We're optimizing the best coding models and adding them to the plan. Price stays the same.
+    Yes. For OpenAI-compatible harnesses, use `Qwen3.5-397B-A17B` or `GLM-5.1`
+    (case-insensitive) with the `https://pass.wafer.ai/v1` endpoint. For Claude Code
+    and other Anthropic-compatible tools, you must also override the default model
+    strings — see [Set Up Claude Code](/wafer-pass/claude-code).
   </Accordion>
 </AccordionGroup>
 
