@@ -36,7 +36,8 @@
           "wafer-pass/kilo-code",
           "wafer-pass/openhands",
           "wafer-pass/librechat",
-          "wafer-pass/opencode"
+          "wafer-pass/opencode",
+          "wafer-pass/usage-api"
         ]
       },
       {

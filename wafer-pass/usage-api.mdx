@@ -1,0 +1,89 @@
+---
+title: Usage API
+description: "Wafer Pass Usage API reference — quota endpoint, authentication, and response fields."
+---
+
+Query your Wafer Pass quota from a single endpoint to see remaining requests,
+token consumption, and overage status for your 5-hour quota window.
+
+## Run
+
+```bash
+curl -s "https://pass.wafer.ai/v1/inference/quota" \
+  -H "Authorization: Bearer YOUR_WAFER_API_KEY"
+```
+
+## Authentication
+
+Pass your Wafer API key (the `wfr_`-prefixed key from your
+[Wafer Pass](/wafer-pass/index) subscription) as a Bearer token in the
+`Authorization` header.
+
+## Response Shape
+
+```json
+{
+  "endpoint": "pass.wafer.ai",
+  "billing_model": "pass_quota",
+  "plan_tier": "privacy",
+  "window_start": "2026-05-16T20:00:00+00:00",
+  "window_end": "2026-05-17T01:00:00+00:00",
+  "server_time": "2026-05-16T23:07:53.731289+00:00",
+  "seconds_to_window_end": 6726,
+  "request_count": 1149,
+  "included_request_limit": 2000,
+  "included_request_count": 1149,
+  "remaining_included_requests": 851,
+  "overage_request_count": 0,
+  "current_period_used_percent": 57.5,
+  "overage_enabled": false,
+  "input_tokens": 31814399,
+  "output_tokens": 524080,
+  "total_tokens": 32338479,
+  "overage_input_tokens": 0,
+  "overage_output_tokens": 0,
+  "overage_cache_read_tokens": 0,
+  "total_overage_tokens": 0,
+  "estimated_overage_cents": 0,
+  "model_overages": []
+}
+```
+
+## Key Fields
+
+- `plan_tier`: your subscription tier (e.g. `privacy`, `token-usage`, `starter`) — see
+  [Pricing](/wafer-pass/index#pricing)
+- `window_start` / `window_end`: usage quota window (ISO 8601 / RFC 3339)
+- `seconds_to_window_end`: seconds until the window resets
+- `included_request_count` / `included_request_limit` / `remaining_included_requests`:
+  request usage and limit
+- `current_period_used_percent`: percentage of included limit consumed
+- `overage_enabled` / `overage_request_count` / `estimated_overage_cents`:
+  overage status and cost
+- `input_tokens` / `output_tokens` / `total_tokens`: token usage for the
+  current window
+
+<Note>
+  Overage is **opt-in** — see [Pricing](/wafer-pass/index#pricing) for rates,
+  details, and behavior when overage is disabled.
+</Note>
+
+## Polling Guidance
+
+The quota window rolls forward every 5 hours. Poll at most once per minute
+to be a good citizen. A 60-second cache Time To Live (TTL) is a good default.
+
+## Example Usage
+
+A custom dashboard rendering the quota response as a card with **Used**,
+**Resets**, and **Projected** fields plus a progress bar:
+
+<img src="/images/custom-usage-widget.webp" alt="Custom usage widget showing Used, Resets, Projected fields and a progress bar" style={{ border: "1px solid #E5E7EB", borderRadius: "8px" }} />
+
+## Notes
+
+- This endpoint is part of the Wafer Pass API (`pass.wafer.ai`). For
+  dedicated endpoint metrics and request inspection, see
+  [Dedicated Endpoints](/dedicated-endpoints/overview).
+- This endpoint requires an active Wafer Pass subscription; it returns `403`
+  otherwise.
