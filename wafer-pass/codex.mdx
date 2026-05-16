@@ -3,10 +3,19 @@ title: Set Up Codex
 description: "Configure Wafer Pass with OpenAI Codex CLI using a LiteLLM proxy."
 ---
 
-[Codex](https://github.com/openai/codex) (the OpenAI Codex CLI) only speaks the **OpenAI Responses API** (`/v1/responses`). The legacy `wire_api = "chat"` setting was [deprecated in December 2025 and removed in February 2026](https://github.com/openai/codex/discussions/7782), so Codex can no longer talk to a Chat Completions endpoint directly. Wafer Pass is OpenAI Chat Completions–compatible (`/v1/chat/completions`), so to use it from Codex you run a tiny local **[LiteLLM](https://docs.litellm.ai/docs/tutorials/openai_codex)** proxy that translates Responses API requests into Chat Completions on the way to Wafer. This is the path OpenAI's own Codex deprecation notice points users at.
+[Codex] (the OpenAI Codex CLI) only speaks the **OpenAI Responses
+API** (`/v1/responses`). The legacy `wire_api = "chat"` setting was
+[deprecated in December 2025 and removed in February 2026], so Codex can no longer
+talk to a Chat Completions endpoint directly. Wafer Pass is OpenAI Chat Completions–compatible
+(`/v1/chat/completions`), so to use it from Codex you run a tiny local
+**[LiteLLM]** proxy that translates Responses
+API requests into Chat Completions on the way to Wafer. This is the path OpenAI's own Codex
+deprecation notice points users at.
 
 <Note>
-  Once the proxy is running, Codex sends `/v1/responses` requests to LiteLLM on `localhost:4000`, LiteLLM rewrites them as `/v1/chat/completions` against `https://pass.wafer.ai/v1`, and the response stream is translated back into Responses-API SSE events. You only set this up once.
+  Once the proxy is running, Codex sends `/v1/responses` requests to LiteLLM on `localhost:4000`,
+  LiteLLM rewrites them as `/v1/chat/completions` against `https://pass.wafer.ai/v1`, and the
+  response stream is translated back into Responses-API SSE events. You only set this up once.
 </Note>
 
 <Steps>
@@ -15,7 +24,8 @@ description: "Configure Wafer Pass with OpenAI Codex CLI using a LiteLLM proxy."
     npm install -g @openai/codex
     ```
 
-    Verify Codex picks up the Responses API (`wire_api = "responses"` is the only supported value as of `0.92.0+`):
+    Verify Codex picks up the Responses API (`wire_api = "responses"` is the only supported value as
+    of `0.92.0+`):
 
     ```bash
     codex --version
@@ -23,7 +33,8 @@ description: "Configure Wafer Pass with OpenAI Codex CLI using a LiteLLM proxy."
   </Step>
 
   <Step title="Create a LiteLLM proxy config">
-    Create `litellm_config.yaml` in a directory of your choice (e.g. `~/.codex/litellm_config.yaml`):
+    Create `litellm_config.yaml` in a directory of your choice (e.g.
+    `~/.codex/litellm_config.yaml`):
 
     ```yaml
     model_list:
@@ -42,10 +53,13 @@ description: "Configure Wafer Pass with OpenAI Codex CLI using a LiteLLM proxy."
       drop_params: true
     ```
 
-    The `openai/` prefix tells LiteLLM to call Wafer over the OpenAI Chat Completions wire format. `drop_params: true` lets LiteLLM silently drop Responses-only fields that don't have a Chat Completions equivalent.
+    The `openai/` prefix tells LiteLLM to call Wafer over the OpenAI Chat Completions wire format.
+    `drop_params: true` lets LiteLLM silently drop Responses-only fields that don't have a Chat
+    Completions equivalent.
 
     <Warning>
-      Do not share your API key or commit it to version control. The config above reads it from the `WAFER_API_KEY` env var.
+      Do not share your API key or commit it to version control. The config above reads it from the
+      `WAFER_API_KEY` env var.
     </Warning>
   </Step>
 
@@ -63,7 +77,9 @@ description: "Configure Wafer Pass with OpenAI Codex CLI using a LiteLLM proxy."
           --config /app/config.yaml --host 0.0.0.0 --port 4000
         ```
 
-        The host-side `127.0.0.1:` prefix on `-p` keeps the proxy reachable only from your machine. The container itself listens on `0.0.0.0` inside the container so Docker's port forward works.
+        The host-side `127.0.0.1:` prefix on `-p` keeps the proxy reachable only from your machine.
+        The container itself listens on `0.0.0.0` inside the container so Docker's port forward
+        works.
       </Tab>
 
       <Tab title="pip">
@@ -76,7 +92,10 @@ description: "Configure Wafer Pass with OpenAI Codex CLI using a LiteLLM proxy."
     </Tabs>
 
     <Warning>
-      The local proxy intentionally has no auth configured (it's only meant to be reached by Codex on the same machine). Always bind it to `127.0.0.1` as shown above. If you need the proxy reachable over a network, set a `general_settings.master_key` in `litellm_config.yaml` and require it on every inbound request — see [LiteLLM virtual keys](https://docs.litellm.ai/docs/proxy/virtual_keys).
+      The local proxy intentionally has no auth configured (it's only meant to be reached by Codex
+      on the same machine). Always bind it to `127.0.0.1` as shown above. If you need the proxy
+      reachable over a network, set a `general_settings.master_key` in `litellm_config.yaml` and
+      require it on every inbound request — see [LiteLLM virtual keys].
     </Warning>
 
     Confirm it's translating correctly:
@@ -108,10 +127,15 @@ description: "Configure Wafer Pass with OpenAI Codex CLI using a LiteLLM proxy."
     wire_api = "responses"
     ```
 
-    `env_key` tells Codex which env var to read for the bearer token it sends to the local proxy. LiteLLM accepts that token (no proxy-side auth is configured here) and uses its own upstream `api_key: os.environ/WAFER_API_KEY` from `litellm_config.yaml` to call Wafer. Both ultimately read the same `WAFER_API_KEY` env var, so the call to Wafer is authenticated with your Wafer Pass key.
+    `env_key` tells Codex which env var to read for the bearer token it sends to the local proxy.
+    LiteLLM accepts that token (no proxy-side auth is configured here) and uses its own upstream
+    `api_key: os.environ/WAFER_API_KEY` from `litellm_config.yaml` to call Wafer. Both ultimately
+    read the same `WAFER_API_KEY` env var, so the call to Wafer is authenticated with your Wafer
+    Pass key.
 
     <Note>
-      Switch models by changing the top-level `model = "..."` to `Qwen3.5-397B-A17B` or `GLM-5.1`. The model IDs must match a `model_name` entry in your `litellm_config.yaml`.
+      Switch models by changing the top-level `model = "..."` to `Qwen3.5-397B-A17B` or `GLM-5.1`.
+      The model IDs must match a `model_name` entry in your `litellm_config.yaml`.
     </Note>
   </Step>
 
@@ -121,10 +145,21 @@ description: "Configure Wafer Pass with OpenAI Codex CLI using a LiteLLM proxy."
     codex
     ```
 
-    Codex now sends Responses-API traffic to LiteLLM, which forwards it to Wafer. The footer in the TUI should show the Wafer model id (e.g. `Qwen3.5-397B-A17B`).
+    Codex now sends Responses-API traffic to LiteLLM, which forwards it to Wafer. The footer in the
+    TUI should show the Wafer model id (e.g. `Qwen3.5-397B-A17B`).
   </Step>
 </Steps>
 
 <Note>
-  **Why this isn't just two env vars (yet):** Codex's `wire_api = "chat"` removal means *every* third-party OpenAI-compatible provider that doesn't natively expose `/v1/responses` needs a translation layer right now. We track Wafer adding a native Responses endpoint on the [Wafer Pass roadmap](mailto:emilio@wafer.ai); when it ships, you'll be able to drop the LiteLLM step and point Codex straight at `https://pass.wafer.ai/v1`.
+  **Why this isn't just two env vars (yet):** Codex's `wire_api = "chat"` removal means *every*
+  third-party OpenAI-compatible provider that doesn't natively expose `/v1/responses` needs a
+  translation layer right now. We track Wafer adding a native Responses endpoint on the
+  [Wafer Pass roadmap]; when it ships, you'll be able to drop the LiteLLM step and point
+  Codex straight at `https://pass.wafer.ai/v1`.
 </Note>
+
+[Codex]: https://github.com/openai/codex
+[deprecated in December 2025 and removed in February 2026]: https://github.com/openai/codex/discussions/7782
+[LiteLLM]: https://docs.litellm.ai/docs/tutorials/openai_codex
+[LiteLLM virtual keys]: https://docs.litellm.ai/docs/proxy/virtual_keys
+[Wafer Pass roadmap]: mailto:emilio@wafer.ai

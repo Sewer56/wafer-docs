@@ -3,11 +3,13 @@ title: Set Up Conductor
 description: "Configure Wafer Pass with Conductor for macOS."
 ---
 
-[Conductor](https://www.conductor.build/) runs a team of parallel Claude Code agents in isolated Git worktrees on macOS. Because Conductor uses Claude Code under the hood, it picks up Wafer the same way Claude Code does — with an extra knob to pin the model to `Qwen3.5-397B-A17B` or `GLM-5.1`.
+[Conductor] runs a team of parallel Claude Code agents in isolated Git
+worktrees on macOS. Because Conductor uses Claude Code under the hood, it picks up Wafer the same
+way Claude Code does — with an extra knob to pin the model to `Qwen3.5-397B-A17B` or `GLM-5.1`.
 
 <Steps>
   <Step title="Install Conductor">
-    Download the macOS app from [conductor.build](https://www.conductor.build/) and launch it.
+    Download the macOS app from [conductor.build] and launch it.
   </Step>
 
   <Step title="Configure Wafer as the endpoint">
@@ -26,7 +28,9 @@ description: "Configure Wafer Pass with Conductor for macOS."
   </Step>
 
   <Step title="Pin a Wafer model">
-    Conductor spawns Claude Code, which sends Anthropic model strings by default — those don't match a Wafer model. Pin Claude Code (and therefore Conductor) to a Wafer model with these env vars in the same Environment section:
+    Conductor spawns Claude Code, which sends Anthropic model strings by default — those don't
+    match a Wafer model. Pin Claude Code (and therefore Conductor) to a Wafer model with these env
+    vars in the same Environment section:
 
     For `Qwen3.5-397B-A17B`:
 
@@ -47,11 +51,18 @@ description: "Configure Wafer Pass with Conductor for macOS."
     ```
 
     <Note>
-      This follows the pattern OpenRouter documents in its [Claude Code integration guide](https://openrouter.ai/docs/guides/coding-agents/claude-code-integration). Because Conductor spawns Claude Code subprocesses, the same env vars override opus, sonnet, haiku, and subagent calls.
+      This follows the pattern OpenRouter documents in its [Claude Code integration guide].
+      Because Conductor spawns Claude Code subprocesses, the same env vars override opus, sonnet,
+      haiku, and subagent calls.
     </Note>
   </Step>
 
   <Step title="Start a run">
-    Create a workspace in Conductor, pick a repo, and kick off an agent. Requests now route through Wafer.
+    Create a workspace in Conductor, pick a repo, and kick off an agent. Requests now route through
+    Wafer.
   </Step>
 </Steps>
+
+[Conductor]: https://www.conductor.build/
+[conductor.build]: https://www.conductor.build/
+[Claude Code integration guide]: https://openrouter.ai/docs/guides/coding-agents/claude-code-integration

@@ -4,12 +4,14 @@ description: "Configure Wafer Pass with OpenHands."
 ---
 
 <Note>
-  **Model string:** the examples below use `Qwen3.5-397B-A17B`. To use a different model, swap that ID for `GLM-5.1` anywhere a model ID appears. The `openai/` prefix is required — OpenHands uses litellm under the hood.
+  **Model string:** the examples below use `Qwen3.5-397B-A17B`. To use a different model, swap that
+  ID for `GLM-5.1` anywhere a model ID appears. The `openai/` prefix is required — OpenHands uses
+  litellm under the hood.
 </Note>
 
 <Steps>
   <Step title="Install OpenHands">
-    Follow the [OpenHands installation guide](https://docs.all-hands.dev/). The quickest way:
+    Follow the [OpenHands installation guide]. The quickest way:
 
     ```bash
     docker pull docker.all-hands.dev/all-hands-ai/runtime:0.44-nikolaik
@@ -31,7 +33,8 @@ description: "Configure Wafer Pass with OpenHands."
     - **API Key**: your Wafer API key
 
     <Warning>
-      The `openai/` prefix is required. OpenHands uses litellm under the hood, and this prefix tells it to use the OpenAI-compatible completion path.
+      The `openai/` prefix is required. OpenHands uses litellm under the hood, and this prefix tells
+      it to use the OpenAI-compatible completion path.
     </Warning>
   </Step>
 
@@ -50,3 +53,5 @@ description: "Configure Wafer Pass with OpenHands."
     Open a conversation in the OpenHands UI to confirm the connection.
   </Step>
 </Steps>
+
+[OpenHands installation guide]: https://docs.all-hands.dev/

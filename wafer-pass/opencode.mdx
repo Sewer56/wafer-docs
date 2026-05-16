@@ -72,9 +72,9 @@ description: "Configure Wafer Pass with OpenCode TUI and Desktop app."
 
 ## Missing Models?
 
-OpenCode sources its model list from [models.dev](https://models.dev), not from the
-`/v1/models` endpoint. New Wafer models may not appear immediately in the model
-picker - a PR to models.dev is needed.
+OpenCode sources its model list from [models.dev](https://models.dev), not from the `/v1/models`
+endpoint. New Wafer models may not appear immediately in the model picker - a PR to models.dev is
+needed.
 
 ### Step 1: Test Locally
 
@@ -105,22 +105,21 @@ Add the missing models to your global config at `~/.config/opencode/opencode.jso
 }
 ```
 
-The example above adds `MiniMax-M2.7`. Add more models by adding additional
-entries under `"models"` following the same pattern.
+The example above adds `MiniMax-M2.7`. Add more models by adding additional entries under
+`"models"` following the same pattern.
 
 Restart OpenCode. The models will appear in your model picker. Test that they work correctly.
 
 <Note>
-  Use `WAFER_API_KEY` environment variable, or replace `"{env:WAFER_API_KEY}"` with your actual API key.
+  Use `WAFER_API_KEY` environment variable, or replace `"{env:WAFER_API_KEY}"` with your actual API
+  key.
 </Note>
 
 ### Step 2: Add to models.dev
 
-Once tested, submit a PR to
-[models.dev](https://github.com/anomalyco/models.dev) to make the models
-available to all users:
+Once tested, submit a PR to [models.dev] to make the models available to all users:
 
-1. Fork the [models.dev repository](https://github.com/anomalyco/models.dev)
+1. Fork the [models.dev repository]
 2. Create a new branch with your changes
 3. Add a new model file in `providers/wafer.ai/models/` (e.g., `MiniMax-M2.7.toml`)
 4. Open a PR with a clear description
@@ -138,14 +137,11 @@ cache_read = 0
 cache_write = 0
 ```
 
-This inherits all metadata from the canonical model and overrides only the
-pricing for Wafer Pass. See
-[PR #1729](https://github.com/anomalyco/models.dev/pull/1729) for a real
-example.
+This inherits all metadata from the canonical model and overrides only the pricing for Wafer Pass.
+See [PR #1729] for a real example.
 
-Once merged, the model will appear in OpenCode's model picker for all users
-after the next models.dev sync. Run `opencode models --refresh` to force an
-update.
+Once merged, the model will appear in OpenCode's model picker for all users after the next
+models.dev sync. Run `opencode models --refresh` to force an update.
 
 ## Optimization
 
@@ -160,4 +156,9 @@ Set `small_model` in `opencode.json` for simple tasks like session title generat
 ```
 
 Helps improve speed/quota.
-See [OpenCode docs](https://opencode.ai/docs/config/#models) as reference.
+See [OpenCode docs] as reference.
+
+[models.dev]: https://github.com/anomalyco/models.dev
+[models.dev repository]: https://github.com/anomalyco/models.dev
+[PR #1729]: https://github.com/anomalyco/models.dev/pull/1729
+[OpenCode docs]: https://opencode.ai/docs/config/#models
